@@ -13,10 +13,9 @@ var models = initModels( sequelize );
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
   /* 3. Uso del método findAll */
-  let usersCollection = await models.users.findAll({ })
-  let rolesCollection = await models.roles.findAll({ })
+ 
   //res.send('respond with a resource');
-  res.render('crud', { title: 'CRUD with users', usersArray: usersCollection, rolesArray: rolesCollection });
+  res.render('login');
 });
     
  /* POST user. */
@@ -24,7 +23,7 @@ router.get('/', async function(req, res, next) {
  router.post('/', async (req, res) => {
 
    /* 3. Desestructure los elementos en el cuerpo del requerimiento */
-   let { name, password, idrole } = req.body;
+   let { username, password } = req.body;
 
    try {
 
@@ -33,8 +32,11 @@ router.get('/', async function(req, res, next) {
      let hash = crypto.createHmac('sha512', salt).update(password).digest("base64");
      let passwordHash = salt + "$" + hash
 
-     /* 5. Guarde el registro mediante el método create */
-     let user = await models.users.create({ name: name, password: passwordHash })
+     const userMatch = await models.users.findOne({where: {name: username, password: passwordHash}})
+
+     if(userMatch){
+        res.redirect('/users')
+     } else {res.redirect('/')}
 
      /* 6. Redireccione a la ruta con la vista principal '/users' */
      res.redirect('/users')
