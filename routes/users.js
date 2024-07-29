@@ -13,10 +13,17 @@ var models = initModels( sequelize );
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
   /* 3. Uso del método findAll */
-  let usersCollection = await models.users.findAll({ })
+  let usersCollection = await models.users.findAll({
+     /* 3.1. Including everything */
+     include: { all: true, nested: true },
+            
+     /* 3.2. Raw Queries */
+     raw: true,
+     nest: true,
+   })
   let rolesCollection = await models.roles.findAll({ })
   //res.send('respond with a resource');
-  res.render('crud', { title: 'CRUD with users', usersArray: usersCollection, rolesArray: rolesCollection });
+  res.render('crud', { username: req.cookies['username'], title: 'CRUD with users', usersArray: usersCollection, rolesArray: rolesCollection });
 });
     
  /* POST user. */
@@ -35,6 +42,7 @@ router.get('/', async function(req, res, next) {
 
      /* 5. Guarde el registro mediante el método create */
      let user = await models.users.create({ name: name, password: passwordHash })
+     await models.users_roles.create({ users_iduser: user.iduser, roles_idrole: idrole })
 
      /* 6. Redireccione a la ruta con la vista principal '/users' */
      res.redirect('/users')
