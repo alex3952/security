@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+const jwt = require('jsonwebtoken');
 /* 1. Importe el módulo crypto */
 let crypto = require('crypto');
 
