@@ -9,7 +9,7 @@ router.get('/', async function (req, res, next) {
 
     const token = jwt.sign({ username: username }, tokenSecret , { expiresIn: '1h' });
 
-    res.render('token', { username: username, token: token, title: 'Token' });
+    res.render('Token', { username: username, token: token, title: 'Token' });
 });
 
 module.exports = router;
